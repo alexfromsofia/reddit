@@ -1,0 +1,4 @@
+fragment CommonUserData on User {
+  id
+  username
+}
