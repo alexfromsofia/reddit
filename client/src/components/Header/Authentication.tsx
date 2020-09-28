@@ -1,17 +1,18 @@
 import React from "react";
-import { Avatar, Spinner } from "@chakra-ui/core";
+import { Avatar, Button, Spinner } from "@chakra-ui/core";
 import { NavItem } from "./NavItem";
-import { useMeQuery } from "../../generated/graphql";
+import { useLogoutMutation, useMeQuery } from "../../generated/graphql";
 
 interface AuthenticationProps {}
 
 export const Authentication: React.FC<AuthenticationProps> = () => {
   const [{ data, fetching }] = useMeQuery();
+  const [{ fetching: logoutFetching }, logout] = useLogoutMutation();
 
   if (fetching) {
     return <Spinner />;
   }
-  console.log(data);
+
   if (!data?.me) {
     return (
       <>
@@ -25,7 +26,15 @@ export const Authentication: React.FC<AuthenticationProps> = () => {
     return (
       <>
         <Avatar size="sm" name={data.me.username} />
-        <NavItem href="/logout" label="Logout" />
+        <Button
+          ml={4}
+          size="sm"
+          variantColor="dark"
+          isLoading={logoutFetching}
+          onClick={() => logout()}
+        >
+          Logout
+        </Button>
       </>
     );
   }
