@@ -22,7 +22,7 @@ export const InputField: React.FC<InputFieldProps> = ({
 
   return (
     <FormControl isInvalid={!!error}>
-      <FormLabel htmlFor={props.name}>First name</FormLabel>
+      <FormLabel htmlFor={props.name}>{label}</FormLabel>
       <Input
         {...field}
         {...props}
