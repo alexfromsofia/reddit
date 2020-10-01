@@ -2,11 +2,12 @@ import React from "react";
 import { Avatar, Button, Spinner } from "@chakra-ui/core";
 import { NavItem } from "./NavItem";
 import { useLogoutMutation, useMeQuery } from "../../generated/graphql";
+import { isServer } from "../../utils/isServer";
 
 interface AuthenticationProps {}
 
 export const Authentication: React.FC<AuthenticationProps> = () => {
-  const [{ data, fetching }] = useMeQuery();
+  const [{ data, fetching }] = useMeQuery({ pause: isServer() });
   const [{ fetching: logoutFetching }, logout] = useLogoutMutation();
 
   if (fetching) {

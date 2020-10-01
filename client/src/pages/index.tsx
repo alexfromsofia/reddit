@@ -1,10 +1,18 @@
+import { withUrqlClient } from "next-urql";
 import { Header } from "../components/Header/Header";
+import { usePostsQuery } from "../generated/graphql";
+import { createUrqlClient } from "../utils/createUrqlClient";
 
-const Index = () => (
-  <div>
-    <Header />
-    <div>Hello world</div>
-  </div>
-);
+const Index = () => {
+  const [{ data }] = usePostsQuery();
 
-export default Index;
+  return (
+    <div>
+      <Header />
+      <div>Server data:</div>
+      <div>{JSON.stringify(data?.posts)}</div>
+    </div>
+  );
+};
+
+export default withUrqlClient(createUrqlClient, { ssr: true })(Index);
