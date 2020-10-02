@@ -14,4 +14,3 @@ function MyApp({ Component, pageProps }: any) {
 }
 
 export default MyApp;
-// !!! 3:50:09 Tutorial progress
