@@ -1,7 +1,8 @@
 import React from "react";
 import { useRouter } from "next/router";
 import { Form, Formik } from "formik";
-import { Box, Button } from "@chakra-ui/core";
+import { Box, Button, Flex, Link } from "@chakra-ui/core";
+import NextLink from "next/link";
 
 import { Wrapper } from "../components/Wrapper";
 import { InputField } from "../components/InputField";
@@ -48,9 +49,15 @@ export const Register: React.FC<RegisterProps> = ({}) => {
                 type="password"
               />
             </Box>
-            <Button mt="4" isLoading={isSubmitting} type="submit">
-              Register
-            </Button>
+
+            <Flex mt="4" justifyContent="space-between" alignItems="center">
+              <Button isLoading={isSubmitting} type="submit">
+                Register
+              </Button>
+              <NextLink href="/login">
+                <Link>Already registered?</Link>
+              </NextLink>
+            </Flex>
           </Form>
         )}
       </Formik>

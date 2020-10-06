@@ -1,7 +1,8 @@
 import React from "react";
 import { useRouter } from "next/router";
 import { Form, Formik } from "formik";
-import { Box, Button } from "@chakra-ui/core";
+import { Box, Button, Flex, Link } from "@chakra-ui/core";
+import NextLink from "next/link";
 
 import { Wrapper } from "../components/Wrapper";
 import { InputField } from "../components/InputField";
@@ -45,9 +46,14 @@ export const Login: React.FC<LoginProps> = ({}) => {
                 type="password"
               />
             </Box>
-            <Button mt="4" isLoading={isSubmitting} type="submit">
-              Login
-            </Button>
+            <Flex mt="4" justifyContent="space-between" alignItems="center">
+              <Button isLoading={isSubmitting} type="submit">
+                Login
+              </Button>
+              <NextLink href="/forgot-password">
+                <Link>forgot password?</Link>
+              </NextLink>
+            </Flex>
           </Form>
         )}
       </Formik>
