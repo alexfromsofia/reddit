@@ -1,32 +1,39 @@
-import "reflect-metadata";
-import express from "express";
-import { MikroORM } from "@mikro-orm/core";
-import Redis from "ioredis";
-import session from "express-session";
-import connectRedis from "connect-redis";
-import { buildSchema } from "type-graphql";
-import { ApolloServer } from "apollo-server-express";
-import cors from "cors";
+import 'reflect-metadata';
+import express from 'express';
+import Redis from 'ioredis';
+import session from 'express-session';
+import connectRedis from 'connect-redis';
+import { buildSchema } from 'type-graphql';
+import { ApolloServer } from 'apollo-server-express';
+import cors from 'cors';
+import { createConnection } from 'typeorm';
 
-import mikroOrmConfig from "./mikro-orm.config";
-import { HelloResolver } from "./resolvers/hello";
-import { PostResolver } from "./resolvers/post";
-import { UserResolver } from "./resolvers/user";
-import { COOKIE_NAME, __prod__ } from "./constants";
+import { HelloResolver } from './resolvers/hello';
+import { PostResolver } from './resolvers/post';
+import { UserResolver } from './resolvers/user';
+import { COOKIE_NAME, __prod__ } from './constants';
+import { Post } from './entities/Post';
+import { User } from './entities/User';
 
 const main = async () => {
   // Connect to DB
-  const orm = await MikroORM.init(mikroOrmConfig);
-  // Run migrations
-  await orm.getMigrator().up();
+  const conn = await createConnection({
+    type: 'postgres',
+    database: 'reddit2',
+    username: 'postgres',
+    password: 'postgres',
+    logging: !__prod__,
+    synchronize: !__prod__,
+    entities: [Post, User]
+  });
 
   // Setup express server
   const app = express();
 
   app.use(
     cors({
-      origin: "http://localhost:3000",
-      credentials: true,
+      origin: 'http://localhost:3000',
+      credentials: true
     })
   );
 
@@ -41,12 +48,12 @@ const main = async () => {
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 365 * 5, // 5 years
         httpOnly: true,
-        sameSite: "lax", // csrf - TODO: google
-        secure: __prod__, // use cookie only on https
+        sameSite: 'lax', // csrf - TODO: google
+        secure: __prod__ // use cookie only on https
       },
-      secret: "make_this_env_var",
+      secret: 'make_this_env_var',
       resave: false,
-      saveUninitialized: false,
+      saveUninitialized: false
     })
   );
 
@@ -54,15 +61,15 @@ const main = async () => {
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [HelloResolver, PostResolver, UserResolver],
-      validate: false,
+      validate: false
     }),
-    context: ({ req, res }) => ({ em: orm.em, req, res, redis }),
+    context: ({ req, res }) => ({ req, res, redis })
   });
 
   apolloServer.applyMiddleware({ app, cors: false });
 
   app.listen(4000, () => {
-    console.log("Server started on localhost:4000");
+    console.log('Server started on localhost:4000');
   });
 };
 

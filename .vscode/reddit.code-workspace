@@ -1,0 +1,27 @@
+{
+  "folders": [
+    {
+      "path": ".."
+    }
+  ],
+  "settings": {
+    "debug.console.fontSize": 16,
+    "emmet.triggerExpansionOnTab": true,
+    "git.ignoredRepositories": [
+      "${workspaceFolder}/StarsWebClient.code-workspace"
+    ],
+    "explorer.openEditors.visible": 0,
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 5000,
+    "gitlens.blame.format": "${author|20} ${agoOrDate|14-}",
+    "terminal.integrated.copyOnSelection": true,
+    "terminal.integrated.fontSize": 16,
+    "terminal.integrated.fontWeightBold": "800",
+    "terminal.integrated.rendererType": "dom",
+    "terminal.integrated.scrollback": 100000,
+    "terminal.integrated.cursorBlinking": true,
+    "workbench.fontAliasing": "antialiased",
+    "workbench.editor.enablePreview": false,
+    "workbench.editor.enablePreviewFromQuickOpen": false
+  }
+}

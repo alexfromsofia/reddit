@@ -10,7 +10,7 @@ A full stack app imitating Reddit using the following tech stack:
 - Redis
 - GraphQL/TypeGraphQL
 - PostgreSQL
-- MikroORM/TypeORM
+- TypeORM
 - Express
 
 ## Frontend
