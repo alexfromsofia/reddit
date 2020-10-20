@@ -1,6 +1,6 @@
-import React from "react";
 import { Flex, Heading } from "@chakra-ui/core";
 import NextLink from "next/link";
+import React from "react";
 import { DarkModeSwitch } from "../DarkModeSwitch";
 import { Authentication } from "./Authentication";
 
@@ -8,6 +8,7 @@ interface HeaderProps {}
 
 export const Header: React.FC<HeaderProps> = (props) => (
   <Flex
+    position="sticky"
     as="nav"
     align="center"
     justify="space-between"

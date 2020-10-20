@@ -1,6 +1,6 @@
-import * as React from "react";
-import { Button, Link, ButtonProps, Flex } from "@chakra-ui/core";
+import { Button, ButtonProps, Flex, Link } from "@chakra-ui/core";
 import NextLink from "next/link";
+import * as React from "react";
 
 interface NavItemProps {
   label: string;

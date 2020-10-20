@@ -1,8 +1,8 @@
-import React from "react";
 import { Avatar, Button, Spinner } from "@chakra-ui/core";
-import { NavItem } from "./NavItem";
+import React from "react";
 import { useLogoutMutation, useMeQuery } from "../../generated/graphql";
 import { isServer } from "../../utils/isServer";
+import { NavItem } from "./NavItem";
 
 interface AuthenticationProps {}
 
