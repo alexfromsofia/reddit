@@ -6,7 +6,7 @@ import { usePostsQuery } from "../generated/graphql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 
 const Index = () => {
-  const [{ data }] = usePostsQuery();
+  const [{ data }] = usePostsQuery({ variables: { limit: 10 } });
 
   return (
     <Layout variant="regular">
@@ -15,7 +15,9 @@ const Index = () => {
           <Button>Create post</Button>
         </Link>
       </NextLink>
-      <div>{JSON.stringify(data?.posts)}</div>
+      {data?.posts.map((item) => (
+        <div style={{ display: "flex" }}>{item.title}</div>
+      ))}
     </Layout>
   );
 };
