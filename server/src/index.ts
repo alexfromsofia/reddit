@@ -17,13 +17,13 @@ import { User } from './entities/User';
 
 const main = async () => {
   // Connect to DB
-  const conn = await createConnection({
+  await createConnection({
     type: 'postgres',
     database: 'reddit2',
     username: 'postgres',
     password: 'postgres',
-    logging: !__prod__,
-    synchronize: !__prod__,
+    logging: true,
+    synchronize: true,
     entities: [Post, User]
   });
 
@@ -63,6 +63,7 @@ const main = async () => {
       resolvers: [HelloResolver, PostResolver, UserResolver],
       validate: false
     }),
+    tracing: true,
     context: ({ req, res }) => ({ req, res, redis })
   });
 
