@@ -1,31 +1,34 @@
-import 'reflect-metadata';
-import express from 'express';
-import Redis from 'ioredis';
-import session from 'express-session';
-import connectRedis from 'connect-redis';
-import { buildSchema } from 'type-graphql';
 import { ApolloServer } from 'apollo-server-express';
+import connectRedis from 'connect-redis';
 import cors from 'cors';
+import express from 'express';
+import session from 'express-session';
+import Redis from 'ioredis';
+import path from 'path';
+import 'reflect-metadata';
+import { buildSchema } from 'type-graphql';
 import { createConnection } from 'typeorm';
-
-import { HelloResolver } from './resolvers/hello';
-import { PostResolver } from './resolvers/post';
-import { UserResolver } from './resolvers/user';
 import { COOKIE_NAME, __prod__ } from './constants';
 import { Post } from './entities/Post';
 import { User } from './entities/User';
+import { HelloResolver } from './resolvers/hello';
+import { PostResolver } from './resolvers/post';
+import { UserResolver } from './resolvers/user';
 
 const main = async () => {
   // Connect to DB
-  await createConnection({
+  const conn = await createConnection({
     type: 'postgres',
     database: 'reddit2',
     username: 'postgres',
     password: 'postgres',
     logging: true,
     synchronize: true,
-    entities: [Post, User]
+    entities: [Post, User],
+    migrations: [path.join(__dirname, './migrations/*')]
   });
+
+  await conn.runMigrations();
 
   // Setup express server
   const app = express();
