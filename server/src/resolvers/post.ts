@@ -27,22 +27,26 @@ class PostInput {
 @Resolver(Post)
 export class PostResolver {
   @FieldResolver(() => String)
-  textSnippet(@Root() root: Post) {
-    return root.text.slice(0, 50);
+  textSnippet(@Root() post: Post) {
+    return post.text.slice(0, 50);
   }
+
   @Query(() => [Post])
   async posts(
     @Arg('limit', () => Int) limit: number,
     @Arg('cursor', () => String, { nullable: true }) cursor: string | null
   ): Promise<Post[]> {
+    const realLimit = Math.min(50, limit);
     const qb = getConnection()
       .getRepository(Post)
       .createQueryBuilder('p')
       .orderBy('"createdAt"', 'DESC')
-      .take(Math.min(limit, 50));
+      .take(realLimit);
 
     if (cursor) {
-      qb.where('"createdAt" < :cursor', { cursor: new Date(parseInt(cursor)) });
+      qb.where('"createdAt" < :cursor', {
+        cursor: new Date(parseInt(cursor))
+      });
     }
 
     return qb.getMany();
@@ -50,13 +54,16 @@ export class PostResolver {
 
   @Query(() => Post, { nullable: true })
   post(@Arg('id') id: number): Promise<Post | undefined> {
-    return Post.findOne({ id });
+    return Post.findOne(id);
   }
 
   @Mutation(() => Post)
   @UseMiddleware(isAuth)
   async createPost(@Arg('input') input: PostInput, @Ctx() { req }: MyContext): Promise<Post> {
-    return Post.create({ ...input, creatorId: req.session.userId }).save();
+    return Post.create({
+      ...input,
+      creatorId: req.session.userId
+    }).save();
   }
 
   @Mutation(() => Post, { nullable: true })
@@ -64,7 +71,7 @@ export class PostResolver {
     @Arg('id') id: number,
     @Arg('title', () => String, { nullable: true }) title: string
   ): Promise<Post | null> {
-    const post = await Post.findOne({ id });
+    const post = await Post.findOne(id);
     if (!post) {
       return null;
     }
@@ -76,8 +83,7 @@ export class PostResolver {
 
   @Mutation(() => Boolean)
   async deletePost(@Arg('id') id: number): Promise<boolean> {
-    await Post.delete({ id });
-
+    await Post.delete(id);
     return true;
   }
 }

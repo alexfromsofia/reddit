@@ -12,32 +12,36 @@ import React, { useState } from "react";
 import { Layout } from "../components/Layout";
 import { Post } from "../components/Post";
 import { usePostsQuery } from "../generated/graphql";
-import { createUrqlClient } from "../utils/createUrqlClient";
+import { createUrqlClient } from "../utils/urql/createUrqlClient";
 
 const Index = () => {
-  const [cursor, setCursor] = useState<string | null>(null);
+  const [cursor, setCursor] = useState<string>(`${+new Date()}`);
   const [{ data, fetching }] = usePostsQuery({
-    variables: { limit: 10, cursor },
+    variables: { limit: 5, cursor },
   });
   const handleLoadMore = () => {
     if (!data) return;
     const { posts } = data;
-    if (!posts[0].createdAt) return;
-
-    setCursor(posts[0].createdAt);
+    const newCursor = posts[posts.length - 1].createdAt;
+    if (!newCursor) return;
+    setCursor(newCursor);
   };
   let content = null;
 
   if (!fetching && !data) {
     content = <Heading>No posts in your feed.</Heading>;
   } else if (fetching && !data) {
-    content = <CircularProgress value={50} />;
+    content = (
+      <Flex align="center" justify="center" my={8}>
+        <CircularProgress value={50} />
+      </Flex>
+    );
   } else if (!fetching && data) {
     content = (
       <>
         <Stack spacing={8}>
-          {data?.posts.map(({ title, textSnippet }) => (
-            <Post title={title} text={textSnippet} />
+          {data?.posts.map(({ title, textSnippet, id }) => (
+            <Post key={id} title={title} text={textSnippet} />
           ))}
         </Stack>
         <Flex align="center" justify="center" my={8}>
@@ -65,4 +69,4 @@ const Index = () => {
   );
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: true })(Index);
+export default withUrqlClient(createUrqlClient)(Index);

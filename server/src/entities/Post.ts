@@ -1,11 +1,12 @@
-import { Field, ObjectType } from 'type-graphql';
+import { ObjectType, Field } from 'type-graphql';
 import {
-  BaseEntity,
-  Column,
   Entity,
-  ManyToOne,
+  Column,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  CreateDateColumn,
+  UpdateDateColumn,
+  BaseEntity,
+  ManyToOne
 } from 'typeorm';
 import { User } from './User';
 
@@ -36,7 +37,7 @@ export class Post extends BaseEntity {
   creator: User;
 
   @Field(() => String)
-  @UpdateDateColumn()
+  @CreateDateColumn()
   createdAt: Date;
 
   @Field(() => String)

@@ -7,8 +7,8 @@ import React from "react";
 import { InputField } from "../components/InputField";
 import { Wrapper } from "../components/Wrapper";
 import { useLoginMutation } from "../generated/graphql";
-import { createUrqlClient } from "../utils/createUrqlClient";
 import { toErrorMap } from "../utils/toErrorMap";
+import { createUrqlClient } from "../utils/urql/createUrqlClient";
 
 interface LoginProps {}
 

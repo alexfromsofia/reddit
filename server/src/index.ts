@@ -30,6 +30,8 @@ const main = async () => {
 
   await conn.runMigrations();
 
+  // await Post.delete({});
+
   // Setup express server
   const app = express();
 
