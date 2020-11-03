@@ -1,3 +1,4 @@
+import { Upvote } from '../entities/Upvote';
 import {
   Arg,
   Ctx,
@@ -40,6 +41,29 @@ export class PostResolver {
   @FieldResolver(() => String)
   textSnippet(@Root() post: Post) {
     return post.text.slice(0, 50);
+  }
+
+  @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
+  async vote(
+    @Arg('postId', () => Int) postId: number,
+    @Arg('value', () => Int) value: number,
+    @Ctx() { req }: MyContext
+  ) {
+    const isUpvote = value !== -1;
+    const realValue = isUpvote ? 1 : -1;
+    const { userId } = req.session;
+
+    await getConnection().query(
+      `
+    insert into upvote ("userId", "postId", value)
+    values (${userId},${postId},${realValue});
+    update post
+    set points = points + ${realValue}
+    where id = ${postId};
+    `
+    );
+    return true;
   }
 
   @Query(() => PaginatedPosts)
