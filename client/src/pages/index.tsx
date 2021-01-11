@@ -11,16 +11,19 @@ import NextLink from "next/link";
 import React, { useState } from "react";
 import { Layout } from "../components/Layout";
 import { Post } from "../components/Post";
-import { usePostsQuery } from "../generated/graphql";
+import { useMeQuery, usePostsQuery } from "../generated/graphql";
+import { isServer } from "../utils/isServer";
 import { createUrqlClient } from "../utils/urql/createUrqlClient";
 
 const Index = () => {
+  const [{ data: meData, fetching: meDataFetching }] = useMeQuery({
+    pause: isServer(),
+  });
   const [cursor, setCursor] = useState<string | null>(null);
   const [{ data, fetching }] = usePostsQuery({
     variables: { limit: 5, cursor },
   });
   const posts = data?.posts.posts;
-  console.log(posts);
   const hasMore = data?.posts.hasMore;
   const handleLoadMore = () => {
     if (!posts) return;
@@ -31,7 +34,7 @@ const Index = () => {
   };
   let content = null;
 
-  if (!fetching && !posts) {
+  if (!fetching && !posts && !meDataFetching) {
     content = <Heading>No posts in your feed.</Heading>;
   } else if (fetching && !posts) {
     content = (
@@ -43,8 +46,16 @@ const Index = () => {
     content = (
       <>
         <Stack spacing={8}>
-          {posts.map(({ title, textSnippet, id }) => (
-            <Post key={id} title={title} text={textSnippet} />
+          {posts.map(({ title, textSnippet, id, points, creatorId }) => (
+            <Post
+              key={id}
+              id={id}
+              title={title}
+              text={textSnippet}
+              points={points}
+              creatorId={creatorId}
+              me={meData?.me?.id}
+            />
           ))}
         </Stack>
         <Flex align="center" justify="center" my={8}>
